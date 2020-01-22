@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Archivos de origen">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Archivos de encabezado">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Archivos de recursos">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Archivos de origen\GameController">
+      <UniqueIdentifier>{9c78995a-5fe5-44c3-952e-24cb449bb21e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\PlayerLayer">
+      <UniqueIdentifier>{4f682990-5bd0-408a-ac0a-9ca55183afb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\WorldLayer">
+      <UniqueIdentifier>{0bb992a2-d18a-47ba-b712-34ae30cdb976}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\NPCLayer">
+      <UniqueIdentifier>{7dab5667-c0f3-403d-9a7f-3d2eb32470f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\PlayerHeaders">
+      <UniqueIdentifier>{8caf74c5-6546-4546-b445-398f2299029e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\WorldHeaders">
+      <UniqueIdentifier>{fb16eb57-10e7-4656-9188-c5294167b3fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Player.h">
+      <Filter>Archivos de encabezado\PlayerHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Bag.h">
+      <Filter>Archivos de encabezado\PlayerHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Archivos de encabezado\WorldHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Archivos de encabezado\WorldHeaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ZorkLike.cpp">
+      <Filter>Archivos de origen\GameController</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Archivos de origen\PlayerLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Bag.cpp">
+      <Filter>Archivos de origen\PlayerLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Archivos de origen\WorldLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Archivos de origen\WorldLayer</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
