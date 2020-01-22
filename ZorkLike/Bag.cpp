@@ -17,6 +17,22 @@ bool Bag::TryUseKey()
 	else return false;
 }
 
+bool Bag::TryUseLance()
+{
+	if (ownedItems.lance == 1) {
+		return true;
+	}
+	else return false;
+}
+
+bool Bag::TryUseSnack()
+{
+	if (ownedItems.snack == 1) {
+		return true;
+	}
+	else return false;
+}
+
 void Bag::Start() {
 	maxItems =  1;
 	CalculateItems();

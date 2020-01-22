@@ -22,6 +22,8 @@ public:
 	void KeyObtained();
 	int32 GetItemCount();
 	bool TryUseKey();
+	bool TryUseLance();
+	bool TryUseSnack();
 	
 private:
 	void CalculateItems();

@@ -136,6 +136,8 @@ void Room::GiveItem(int item, int secc)
 	}
 }
 
+//implement room 10 (exit) and change for 5.4 when main door is opened.
+
 void Room::CreateRoom_1()
 {
 	for (int i = 1; i <= 2; i++) {
@@ -270,16 +272,15 @@ void Room::CreateRoom_2()
 	}
 }
 
-// Add bag and look descrip
 void Room::CreateRoom_3()
 {
 	for (int i = 1; i <= 2; i++) {
 		Section secc;
 		secc.look = 1;
-		secc.lookText = "It seems that someone threw his stuff on a rush.";
+		secc.lookText = "++It seems that someone threw his stuff on a rush.";
 		secc.secNum = i;
 		if (i == 1) {
-			secc.description = "--You're in a room, you see a door to the west.";
+			secc.description = "--You're in a room, you see a door to the west. This place is a mess, everything is on the floor.";
 			secc.bigbag = 1;
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
@@ -346,7 +347,10 @@ void Room::CreateRoom_4()
 			}
 		}
 		else {
-			secc.description = "--You're still at the guest room and you see a big Armor. There is an empty spot... looks like another one is missing";
+			secc.description = "--You're still at the guest room and you see a big Armor. There is an empty spot... looks like another one is missing.";
+			secc.snack = 1;
+			secc.look = 1;
+			secc.lookText = "++Looks like someone ate here. The leftovers are still fresh.";
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
 				case  0:
@@ -364,9 +368,6 @@ void Room::CreateRoom_4()
 				}
 			}
 		}
-		secc.snack = 1;
-		secc.look = 1;
-		secc.lookText = "++Looks like someone ate here. The leftovers are still fresh.";
 		sections.push_back(secc);
 	}
 }

@@ -16,14 +16,17 @@ class Player
 {
 public:
 	Player(); // constructor
+	int32 endGame = 0;
 	RoomIdent location;
 	Bag MyBag;
 	void Start();
-	int32 endGame = 0;
+	void LooseLife();
+	void WinLife();
+	int32 CheckLife();
 	
 private:
-	int32 end;
+	const int32 MAXLIFES = 3;
+	const int32 MINLIFES = 0;
 	int32 lifes;
-
 };
 
