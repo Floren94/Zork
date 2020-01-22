@@ -25,6 +25,5 @@ private:
 	int32 end;
 	int32 lifes;
 
-
 };
 

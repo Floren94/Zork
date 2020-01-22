@@ -37,7 +37,8 @@ public:
 	FString GetSeccDescr(int secc);
 	FString CheckLook(int secc); 
 	FString GetRoomDescr(int r, int secc);
-	int CheckItem(int secc);
+	int32 CheckItemPick(int secc, int item);
+	int32 CheckItemLook(int secc);
 	bool CheckDir(int secc, int dir);
 	std::pair<int, int> nextRoom(int dir, int secc) const;
 private:

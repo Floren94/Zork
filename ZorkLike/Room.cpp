@@ -58,7 +58,25 @@ FString Room::GetRoomDescr(int r, int secc)
 	return "Key: " + std::to_string(sections[secc - 1].key) + " Lance: " + std::to_string(sections[secc - 1].lance) + " Snack: " + std::to_string(sections[secc - 1].snack);
 }
 
-int Room::CheckItem(int secc)
+int32 Room::CheckItemPick(int secc, int item)
+{
+	switch (item) {
+	case 1:
+		if (sections[secc - 1].key = 1) { return 1; }
+		break;
+	case 2:
+		if (sections[secc - 1].lance = 1) { return 2; }
+		break;
+	case 3:
+		if (sections[secc - 1].snack = 1) { return 3; }
+		break;
+	case 4:
+		if (sections[secc - 1].bigbag = 1) { return 4; }
+	}
+	return 0;
+}
+
+int Room::CheckItemLook(int secc)
 {
 	if (sections[secc - 1].key == 1) {
 		return 1;
@@ -257,9 +275,12 @@ void Room::CreateRoom_3()
 {
 	for (int i = 1; i <= 2; i++) {
 		Section secc;
+		secc.look = 1;
+		secc.lookText = "It seems that someone threw his stuff on a rush.";
 		secc.secNum = i;
 		if (i == 1) {
 			secc.description = "--You're in a room, you see a door to the west.";
+			secc.bigbag = 1;
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
 				case  0:

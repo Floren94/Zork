@@ -23,6 +23,11 @@ void World::PickItem(int room, int secc, int item) const
 	vectorRooms[room - 1]->GiveItem(item, secc);
 }
 
+int32 World::CheckPickItem(int room, int secc, int item) const
+{
+	return vectorRooms[room - 1]->CheckItemPick(secc, item);
+}
+
 std::pair<int, int> World::nextRoom(int dir, int room, int secc) const
 {
 	return vectorRooms[room - 1]->nextRoom(dir - 1, secc);
@@ -45,5 +50,5 @@ FString World::CheckSecc(int r, int secc) const
 
 std::pair<FString, int> World::LookRoom(int r, int secc) const
 {
-	return std::make_pair( vectorRooms[r - 1]->CheckLook(secc) , vectorRooms[r - 1]->CheckItem(secc));
+	return std::make_pair( vectorRooms[r - 1]->CheckLook(secc) , vectorRooms[r - 1]->CheckItemLook(secc));
 }

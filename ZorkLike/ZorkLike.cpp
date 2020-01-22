@@ -7,7 +7,6 @@
 using FText = std::string;
 using int32 = int;
 
-// function prototypes as outside a class
 void PrintIntro();
 void NewTurn();
 void CheckPick(int item);
@@ -20,6 +19,7 @@ bool CheckItemToss(int32 item);
 int32 moveOrder;
 int32 dir;
 int32 item;
+int32 floorItem;
 bool canEscape = false;
 std::pair<int32, int32> nextRoom;
 std::pair<FString, int32> lookPair;
@@ -41,10 +41,7 @@ int main()
 
 void PrintIntro()
 {
-	std::cout << "TESTING INITIALIZED..." << std::endl;
-	std::cout << "Room: " << MyPlayer.location.roomNum; 
-	std::cout << " Section: " << MyPlayer.location.roomSecc << std::endl;
-	std::cout << "Bag Num: " << bagptr->GetItemCount() << std::endl;
+	std::cout << "TESTING INITIALIZED..." << std::endl << std::endl;
 	return;
 }
 
@@ -223,9 +220,8 @@ bool CheckItemToss(int32 item)
 
 void CheckPick(int item)
 {
-	//function that returns bool if actual item is present (choose item to pick when more than 1))
-	lookPair = world.LookRoom(MyPlayer.location.roomNum, MyPlayer.location.roomSecc);
-	if (lookPair.second == item) {
+	floorItem = world.CheckPickItem(MyPlayer.location.roomNum, MyPlayer.location.roomSecc, item);
+	if (floorItem == item) {
 		switch (item) {
 		case 0:
 			std::cout << "xxx You can't pick that." << std::endl;
