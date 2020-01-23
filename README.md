@@ -52,6 +52,8 @@ We go to meet him and type "use lance" as many times and as fast as we can. If w
 
 After killing him we can go to (5.4) and go south to complete the game.
 
-### END
+## Extra Information ⚙️
+
+In this little project I found some real fun. I work full-time as a .NET developer and time was one of the things that I struggled with as I wanted to give it on time. I usually work with C#, C++ is the first language I learned and lately I've worked with it as I was practicing Unreal. I finished my grade around 8 months ago and have been seriously coding for over a year and a half now. I am still a junior programmer and I want to learn a lot more about architecture, patterns and grow as much as I can. 
 
 
