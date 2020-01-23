@@ -18,7 +18,6 @@ public:
 	std::pair<int, int> nextRoom(int dir, int room, int secc) const;
 	bool CheckDirection(int dir, int room, int secc) const;
 	FString GetRoomDescr(int r, int secc) const;
-	FString CheckSecc(int r, int secc) const;
 	std::pair<FString , int> LookRoom(int r, int secc) const;
 private:
 	std::vector<Room *> vectorRooms;

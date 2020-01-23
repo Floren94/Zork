@@ -5,6 +5,7 @@
 using FString = std::string;
 using int32 = int;
 
+// objects in the bag
 struct BagItems
 {
 	int32 key = 0;
@@ -19,7 +20,6 @@ public:
 	BagItems ownedItems;
 	int32 maxItems = 1;
 	void Start();
-	void KeyObtained();
 	int32 GetItemCount();
 	bool TryUseKey();
 	bool TryUseLance();

@@ -6,15 +6,19 @@
 using FString = std::string;
 using int32 = int;
 
+//Each room can have multiple sections. These are the section params we need.
 struct Section
 {
+	//section numeber in room. 
 	int32 secNum;
+	// Can I look command in here?
 	int32 look = 0;
+	//items here
 	int32 key = 0;
 	int32 lance = 0;
 	int32 snack = 0;
 	int32 bigbag = 0;
-	bool armorHere = false;
+	//Section description at turn start, text when we look command, vector of neraby rooms at North, east, south, west (room, section)
 	FString description;
 	FString lookText;
 	std::vector<std::pair<int32, int32>> vectorDirections;
@@ -39,7 +43,6 @@ public:
 	void GiveItem(int item, int secc);
 	FString GetSeccDescr(int secc);
 	FString CheckLook(int secc); 
-	FString GetRoomDescr(int r, int secc);
 	int32 CheckItemPick(int secc, int item);
 	int32 CheckItemLook(int secc);
 	bool CheckDir(int secc, int dir);

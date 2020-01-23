@@ -4,11 +4,19 @@ using int32 = int;
 
 Bag::Bag() { Start(); }
 
+void Bag::Start() {
+	maxItems = 1;
+	CalculateItems();
+	return;
+}
+
+//returns numer of items we have
 int32  Bag::GetItemCount() {
 	CalculateItems();
 	return itemCount; 
 }
 
+// checks if we have the item we are trying to USE command
 bool Bag::TryUseKey()
 {
 	if (ownedItems.key == 1) {
@@ -33,18 +41,9 @@ bool Bag::TryUseSnack()
 	else return false;
 }
 
-void Bag::Start() {
-	maxItems =  1;
-	CalculateItems();
-	return;
-}
-
+//check number of items we have
 void  Bag::CalculateItems() {
 	itemCount = ownedItems.key + ownedItems.lance + ownedItems.snack;
 }
 
-void Bag::KeyObtained() {
-	ownedItems.key++;
-	CalculateItems();
-}
 

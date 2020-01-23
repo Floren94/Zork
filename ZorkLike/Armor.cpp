@@ -2,6 +2,7 @@
 
 Armor::Armor() { Start(); }
 
+//This Class manages position and lifes of the enemy
 void Armor::Start()
 {
 	lifes = 2;
@@ -9,6 +10,7 @@ void Armor::Start()
 	location.roomSecc = 0;
 }
 
+//moves to room when spawned
 void Armor::Appear()
 {
 	location.roomNum = 5;
@@ -19,7 +21,7 @@ void Armor::LooseLife()
 {
 	lifes--;
 }
-
+// removes when killed
 void Armor::Dead()
 {
 	location.roomNum = 0;
@@ -27,9 +29,14 @@ void Armor::Dead()
 	onCombat = false;
 }
 
+
 int32 Armor::CheckLife()
 {
 	if (lifes == MAXLIFES) { return 0; }
 	else if (lifes == MINLIFES) { return 1; }
 	else { return 2; }
 }
+
+
+
+

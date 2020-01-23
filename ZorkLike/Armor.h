@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <thread> 
 
 // To make it Unreal Friendly as I am used to
 using FString = std::string;
@@ -15,7 +16,7 @@ struct RoomIdentEnemy
 class Armor
 {
 public:
-	Armor();
+	Armor(); //constructor
 	bool onCombat = false;
 	RoomIdentEnemy location;
 	void Start();
@@ -23,9 +24,9 @@ public:
 	void LooseLife();
 	void Dead();
 	int32 CheckLife();
+	std::thread t1;
 private:
 	const int32 MAXLIFES = 2;
 	const int32 MINLIFES = 0;
 	int32 lifes;
 };
-

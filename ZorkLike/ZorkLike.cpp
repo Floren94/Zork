@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <thread> 
+#include <chrono>
 #include "Player.h"
 #include "Armor.h"
 #include "World.h"
@@ -8,6 +10,9 @@
 // to make syntax Unreal friendly
 using FText = std::string;
 using int32 = int;
+
+//This is the Game controller. We will control the world, player, and enemy and all that involves them through here.
+// We won't use pch here so  Project” > “ Configuration Properties” > “C/C++” > “Precompiled Headers > “Not Using Precompiled Headers“ in case we get an error about pch.h
 
 void PrintIntro();
 void NewTurn();
@@ -18,6 +23,7 @@ void UseOrder(FText t);
 void LookOrder();
 void CheckCombat();
 void Attack();
+void EnemyRoutine();
 void CheckPick(int item);
 void CheckOrder(int32 i, FText t);
 int32 CheckMainOrder(FText t);
@@ -30,8 +36,10 @@ int32 dir;
 int32 item;
 int32 floorItem;
 bool canEscape = false;
+bool startEnemyAtt = false;
 std::pair<int32, int32> nextRoom;
 std::pair<FString, int32> lookPair;
+std::thread th_Att;
 
 Player MyPlayer;
 Bag *bagptr;
@@ -42,14 +50,23 @@ char playerMove[256];
 
 int main()
 {
+	// Game starts here
 	bagptr = &MyPlayer.MyBag;
 	PrintIntro();
 
+	// While we don't win or loose we will keep doing this turn based structure
 	do{
 		//If the armor is spawned, check if you're figthing it before the turn starts.
 		if (canEscape) {
 			CheckCombat();
+			// Thread that makes battle in real time
+			if (startEnemyAtt) {
+				startEnemyAtt = false;
+				th_Att = std::thread(EnemyRoutine);
+				th_Att.detach();
+			}
 		}
+		// We will do our actions here
 		NewTurn();
 		// Check if you won or lost before the next turn.
 		if (canEscape && MyPlayer.location.roomNum == 10) {
@@ -57,6 +74,7 @@ int main()
 		}
 	} while (MyPlayer.endGame == 0);
 
+	//check if you win or loose
 	switch (MyPlayer.endGame) {
 	case 1:
 		std::cout << std::endl << "+--------------------------------------------------------------------------------+";
@@ -69,9 +87,10 @@ int main()
 	}
 }
 
+//prints at start
 void PrintIntro()
 {
-	std::cout << "TESTING INITIALIZED..." << std::endl << std::endl;
+	std::cout << "You wake up in an old mansion. Don't know were you are but something is telling you to leave as fast as you can... " << std::endl << std::endl;
 	std::cout << "Coommands: " << std::endl << "-> Go + direction (ex: north)" << std::endl;
 	std::cout << "-> Pick + item (ex: key) " << std::endl << "-> Drop + item (ex: snack) " << std::endl;
 	std::cout << "-> Use + item (ex: lance) " << std::endl << "-> Look " << std::endl;
@@ -81,18 +100,24 @@ void PrintIntro()
 void NewTurn() 
 {
 	std::cout << std::endl << "+--------------------------------------------------------------------------------+" ;
+	// prints room description or informs of battle
 	if (!MyPlayer.onCombat) {
 		std::cout << std::endl << world.GetRoomDescr(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
 	}
 	else {
+		//Alerts if we are fighting the enemy
 		std::cout << std::endl << "++++++++++  ALERT!  ++++++++" << std::endl << "The Guardian's blocking the west side of the hall and willing to kill you!" << std::endl;
 	}
 	std::cout << ">>> What do you do?" << std::endl;
+	//recive order
 	std::cin.getline(playerMove, 100);
-	moveOrder = CheckMainOrder(playerMove);
-	CheckOrder(moveOrder, playerMove);
+	if (MyPlayer.endGame != 2){
+		moveOrder = CheckMainOrder(playerMove);
+		CheckOrder(moveOrder, playerMove);
+	}
 }
 
+//Check first word to see if matches a known command
 int32 CheckMainOrder(FText t)
 {
 	if ((t.find("Go") != std::string::npos) || (t.find("go") != std::string::npos)) {
@@ -110,18 +135,17 @@ int32 CheckMainOrder(FText t)
 	else if ((t.find("Use") != std::string::npos) || (t.find("use") != std::string::npos)) {
 		return 5;
 	}
+	/* Debug purposes
 	else if ((t.find("Check") != std::string::npos) || (t.find("check") != std::string::npos)) {
 		return 6;
-	}
+	}*/
 	return 0;
 }
-
+//Check next word to see if we can complete the command
 void CheckOrder(int32 i, FText t)
 {
-
 	switch (i) {
 		// Command unknown case
-
 	case 0:
 		std::cout << "X- Order not understood, please try again." << std::endl;
 		break;	
@@ -146,18 +170,19 @@ void CheckOrder(int32 i, FText t)
 		UseOrder(t);
 		break;
 
-	case 6:
-		MyPlayer.location.roomNum = 6;
-		MyPlayer.location.roomSecc = 1;
-		bagptr->ownedItems.lance = 1; 
-		world.UnlockMainDoor();
-		canEscape = true;
-		enemy.Appear();
-		//std::cout << world.CheckSecc(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
-		break;
+	//Shortcut to Boss fight. Case check in mainOrder
+	//case 6:
+	//	MyPlayer.location.roomNum = 6;
+	//	MyPlayer.location.roomSecc = 1;
+	//	bagptr->ownedItems.lance = 1; 
+	//	world.UnlockMainDoor();
+	//	canEscape = true;
+	//	enemy.Appear();
+	//	//std::cout << world.CheckSecc(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
+	//	break;
 	}
 }
-
+//Checks next room you're going and moves the player is posible
 void GoOrder(FText t)
 {
 	dir = Direction(t);
@@ -175,7 +200,7 @@ void GoOrder(FText t)
 		std::cout << "X- You can't go there." << std::endl;
 	}
 }
-
+// Look description of the room and if any item is found
 void LookOrder()
 {
 	lookPair = world.LookRoom(MyPlayer.location.roomNum, MyPlayer.location.roomSecc);
@@ -196,7 +221,7 @@ void LookOrder()
 		break;
 	}
 }
-
+// Drops item to floor of current room
 void DropOrder(FText t)
 {
 	item = DropOrPickItem(t);
@@ -214,13 +239,13 @@ void DropOrder(FText t)
 		std::cout << "You can't drop that..." << std::endl;
 	}
 }
-
+// Picks selected item if in room
 void PickOrder(FText t)
 {
 	item = DropOrPickItem(t);
 	CheckPick(item);
 }
-
+// Use object if can be used
 void UseOrder(FText t)
 {
 	item = DropOrPickItem(t);
@@ -230,6 +255,7 @@ void UseOrder(FText t)
 		std::cout << "**** You don't have that." << std::endl;
 		break;
 	case 1:
+		//case key. Can only be used in a certain room section. Unlocks main door and spawns enemy
 		if (MyPlayer.location.roomNum == 8 && bagptr->TryUseKey()) {
 			std::cout << "**** The key fits the hole! The key breaks after using it but the main door is still unlocked, you can now leave!" << std::endl;
 			world.UnlockMainDoor(); 
@@ -245,6 +271,7 @@ void UseOrder(FText t)
 		}
 		break;
 	case 2:
+		//case lance. Olny if we are fighting the enemy
 		if (MyPlayer.onCombat == true && bagptr->TryUseLance()) {
 			Attack();
 		}
@@ -256,6 +283,7 @@ void UseOrder(FText t)
 		}
 		break;
 	case 3:
+		//Case Snack. Can use it if you lost lifes at some point
 		if (MyPlayer.CheckLife() != 0 && bagptr->TryUseSnack()) {
 			MyPlayer.WinLife();
 			std::cout << "*** You're feeling better! Your body doesn't hurt that much now." << std::endl;
@@ -269,11 +297,12 @@ void UseOrder(FText t)
 		break;
 	}
 }
-
+//Check if item specified is pickable at the moment.
 void CheckPick(int item)
 {
 	floorItem = world.CheckPickItem(MyPlayer.location.roomNum, MyPlayer.location.roomSecc, item);
 	if (floorItem == item) {
+		// We can carry just ONE item. If we find the bag we will place the rest of them inside. 
 		switch (item) {
 		case 0:
 			std::cout << "xxx You can't pick that." << std::endl;
@@ -311,6 +340,7 @@ void CheckPick(int item)
 			break;
 			break;
 		case 4:
+			// if you find the bag you can place items inside it and carry all of them
 			bagptr->maxItems = 3;
 			std::cout << "**** You can now place items inside the bag and carry more of them!" << std::endl;
 			break;
@@ -320,7 +350,7 @@ void CheckPick(int item)
 		std::cout << "xxx You can't find that item here." << std::endl;
 	}
 }
-
+// Check if go direction is valid
 int32 Direction(FText t) {
 	if ((t.find("North") != std::string::npos) || (t.find("north") != std::string::npos)) {
 		return 1;
@@ -336,7 +366,7 @@ int32 Direction(FText t) {
 	}
 	return 0;
 }
-
+//Check if item specified exists
 int32 DropOrPickItem(FText t) {
 
 	if ((t.find("Key") != std::string::npos) || (t.find("key") != std::string::npos)) {
@@ -353,7 +383,7 @@ int32 DropOrPickItem(FText t) {
 	}
 	return 0;
 }
-
+//Check If we have the item we want to drop
 bool CheckItemToss(int32 item)
 {
 	switch (item) {
@@ -378,19 +408,22 @@ bool CheckItemToss(int32 item)
 	}
 	return false;
 }
-
+// Checks if you found the guardian and starts the fight
 void CheckCombat() {
 	if (enemy.location.roomNum == MyPlayer.location.roomNum &&
-		enemy.location.roomSecc == MyPlayer.location.roomSecc) {
+		enemy.location.roomSecc == MyPlayer.location.roomSecc &&
+		!MyPlayer.onCombat) {
 		MyPlayer.onCombat = true;
 		enemy.onCombat = true;
+		startEnemyAtt = true;
 	}
-	else if (MyPlayer.onCombat){
+	else if (MyPlayer.onCombat &&
+		enemy.location.roomNum != MyPlayer.location.roomNum){
 		MyPlayer.onCombat = false;
 		enemy.onCombat = false;
 	}
 }
-
+//40% chance to hit the guardian if you have the lance. Use lance case
 void Attack()
 {
 	if (rand() % 100 > 60) {
@@ -405,5 +438,28 @@ void Attack()
 	else {
 		std::cout << "COMBAT RESULT: MISS!" << std::endl << " --> The Guardian did predict the strike and blocked it. He's thought but don't give up." << std::endl;
 	}
+}
+//Called by thread, guardian routine of attack if in battle
+void EnemyRoutine() {
+
+	while (enemy.onCombat)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		if (enemy.onCombat) {
+			std::cout << std::endl << "+----------------   THE GUARDIAN IS PREPARING TO ATTACK!    ------------------------------------------------------+" << std::endl;
+		}
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		if (enemy.onCombat) {
+			std::cout << std::endl << "+----------------   YOU WERE HIT BY THE GUARDIAN !    ------------------------------------------------------------+" << std::endl;
+			MyPlayer.LooseLife();
+			if (MyPlayer.CheckLife() == 1) {
+				std::cout << std::endl << "+------------   HE STOPS AND DEEPLY LOOKs INTO YOUR EYES... -ANY LAST WORDS?     ------------------------------+" << std::endl;
+				MyPlayer.endGame = 2;
+				enemy.onCombat = 0;
+				return;
+			}
+		}
+	}
+
 }
 

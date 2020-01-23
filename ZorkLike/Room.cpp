@@ -7,6 +7,8 @@ using int32 = int;
 
 Room::Room(int n)
 {
+	//We will generate 10 rooms in the world. Depending on which room we're creting will call a diferent contructor for the secctions
+	//each room can have more than 1 section. That means we have 10 rooms but actually 21 sections we can walk through. You can take a look at the map.
 	switch (n) {
 	case  1:
 		CreateRoom_1();
@@ -41,11 +43,12 @@ Room::Room(int n)
 	}
 }
 
+//gets section desciption of the section were we are
 FString Room::GetSeccDescr(int secc) 
 {
 	return sections[secc - 1].description;
 }
-
+// checks if we see something by Look order in section
 FString Room::CheckLook(int secc)
 {
 	if (sections[secc - 1].look == 1) {
@@ -56,11 +59,7 @@ FString Room::CheckLook(int secc)
 	}
 }
 
-FString Room::GetRoomDescr(int r, int secc)
-{
-	return "Key: " + std::to_string(sections[secc - 1].key) + " Lance: " + std::to_string(sections[secc - 1].lance) + " Snack: " + std::to_string(sections[secc - 1].snack);
-}
-
+//checks if item we want to pick is in this room and section
 int32 Room::CheckItemPick(int secc, int item)
 {
 	switch (item) {
@@ -79,6 +78,7 @@ int32 Room::CheckItemPick(int secc, int item)
 	return 0;
 }
 
+//returns first item we see when look order.
 int Room::CheckItemLook(int secc)
 {
 	if (sections[secc - 1].key == 1) {
@@ -96,6 +96,7 @@ int Room::CheckItemLook(int secc)
 	else return 0;
 }
 
+//looks if thers a room at the direction specified in GO
 bool Room::CheckDir(int secc, int dir)
 {
 	if (sections[secc - 1].vectorDirections[dir].first > 0) {
@@ -104,11 +105,13 @@ bool Room::CheckDir(int secc, int dir)
 	return false;
 }
 
+//Returns room and section we are moving to
 std::pair<int, int> Room::nextRoom(int dir, int secc) const
 {
 	return sections[secc - 1].vectorDirections[dir];
 }
 
+//Recive item in this room and sec when Dropped by the player
 void Room::ReciveItem(int item, int secc)
 {
 	switch (item) {
@@ -123,7 +126,7 @@ void Room::ReciveItem(int item, int secc)
 		break;
 	}
 }
-
+// Give the item to the player specified in PICK order
 void Room::GiveItem(int item, int secc)
 {
 	switch (item) {
@@ -139,7 +142,7 @@ void Room::GiveItem(int item, int secc)
 	}
 }
 
-//implement room 10 (exit) and change for 5.4 when main door is opened.
+//Each class room can have more than one section (struct). This builds every section in the room specified (nearby rooms, if look order works, items...)
 
 void Room::CreateRoom_1()
 {
