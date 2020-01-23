@@ -85,6 +85,7 @@ int main()
 		std::cout << std::endl << "**************** Looks like it was too much for you... Your body lays cold on the floor. **********************" << std::endl << std::endl;
 		break;
 	}
+	std::this_thread::sleep_for(std::chrono::seconds(15));
 }
 
 //prints at start
