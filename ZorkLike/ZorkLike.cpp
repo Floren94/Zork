@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include <stdlib.h>
 #include <thread> 
 #include <chrono>
@@ -31,6 +32,7 @@ int32 Direction(FText t);
 int32 DropOrPickItem(FText t);
 bool CheckItemToss(int32 item);
 
+FText s;
 int32 moveOrder;
 int32 dir;
 int32 item;
@@ -112,28 +114,31 @@ void NewTurn()
 	std::cout << ">>> What do you do?" << std::endl;
 	//recive order
 	std::cin.getline(playerMove, 100);
+	// no longer case sensitive
+	s = playerMove;
+	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 	if (MyPlayer.endGame != 2){
-		moveOrder = CheckMainOrder(playerMove);
-		CheckOrder(moveOrder, playerMove);
+		moveOrder = CheckMainOrder(s);
+		CheckOrder(moveOrder, s);
 	}
 }
 
 //Check first word to see if matches a known command
 int32 CheckMainOrder(FText t)
 {
-	if ((t.find("Go") != std::string::npos) || (t.find("go") != std::string::npos)) {
+	if ((t.find("go") != std::string::npos)) {
 		return 1;
 	}
-	else if ((t.find("Look") != std::string::npos) || (t.find("look") != std::string::npos)) {
+	else if ((t.find("look") != std::string::npos)) {
 		return 2;
 	}
-	else if ((t.find("Drop") != std::string::npos) || (t.find("drop") != std::string::npos)) {
+	else if ((t.find("drop") != std::string::npos)) {
 		return 3;
 	}
-	else if ((t.find("Pick") != std::string::npos) || (t.find("pick") != std::string::npos)) {
+	else if ((t.find("pick") != std::string::npos)) {
 		return 4;
 	}
-	else if ((t.find("Use") != std::string::npos) || (t.find("use") != std::string::npos)) {
+	else if ((t.find("use") != std::string::npos)) {
 		return 5;
 	}
 	/* Debug purposes
@@ -218,7 +223,7 @@ void LookOrder()
 		std::cout << "*** You found a snack, you can eat it later." << std::endl;
 		break;
 	case 4:
-		std::cout << "*** You found a bag! Pick it so you can place an extra items inside it!" << std::endl;
+		std::cout << "*** You found a bag! Pick it so you can place extra items inside it!" << std::endl;
 		break;
 	}
 }
@@ -353,16 +358,16 @@ void CheckPick(int item)
 }
 // Check if go direction is valid
 int32 Direction(FText t) {
-	if ((t.find("North") != std::string::npos) || (t.find("north") != std::string::npos)) {
+	if ((t.find("north") != std::string::npos)) {
 		return 1;
 	}
-	else if ((t.find("East") != std::string::npos) || (t.find("east") != std::string::npos)) {
+	else if ((t.find("east") != std::string::npos)) {
 		return 2;
 	}
-	else if ((t.find("South") != std::string::npos) || (t.find("south") != std::string::npos)) {
+	else if ((t.find("south") != std::string::npos)) {
 		return 3;
 	}
-	else if ((t.find("West") != std::string::npos) || (t.find("west") != std::string::npos)) {
+	else if ((t.find("west") != std::string::npos)) {
 		return 4;
 	}
 	return 0;
@@ -370,16 +375,16 @@ int32 Direction(FText t) {
 //Check if item specified exists
 int32 DropOrPickItem(FText t) {
 
-	if ((t.find("Key") != std::string::npos) || (t.find("key") != std::string::npos)) {
+	if ((t.find("key") != std::string::npos)) {
 		return 1;
 	}
-	else if ((t.find("Lance") != std::string::npos) || (t.find("lance") != std::string::npos)) {
+	else if ((t.find("lance") != std::string::npos)) {
 		return 2;
 	}
-	else if ((t.find("Snack") != std::string::npos) || (t.find("snack") != std::string::npos)) {
+	else if ((t.find("snack") != std::string::npos)) {
 		return 3;
 	}
-	else if ((t.find("Bag") != std::string::npos) || (t.find("bag") != std::string::npos)) {
+	else if ((t.find("bag") != std::string::npos)) {
 		return 4;
 	}
 	return 0;
