@@ -32,6 +32,8 @@ public:
 	void CreateRoom_7();
 	void CreateRoom_8();
 	void CreateRoom_9();
+	void CreateRoom_10();
+	void OpenMainDoor();
 	void ReciveItem(int item, int secc);
 	void GiveItem(int item, int secc);
 	FString GetSeccDescr(int secc);

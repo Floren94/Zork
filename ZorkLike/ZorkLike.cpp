@@ -43,7 +43,21 @@ int main()
 	do{
 		//implement open main door and escape if canEscape
 		NewTurn();
+		if (canEscape && MyPlayer.location.roomNum == 10) {
+			MyPlayer.endGame = 1;
+		}
 	} while (MyPlayer.endGame == 0);
+
+	switch (MyPlayer.endGame) {
+	case 1:
+		std::cout << std::endl << "+--------------------------------------------------------------------------------+";
+		std::cout << std::endl << "**************** Congratulations you did it! **********************" << std::endl << std::endl;
+		break;
+	case 2:
+		std::cout << std::endl << "+--------------------------------------------------------------------------------+";
+		std::cout << std::endl << "**************** Looks like it was too much for you... Your body lays cold on the floor. **********************" << std::endl << std::endl;
+		break;
+	}
 }
 
 void PrintIntro()
@@ -193,6 +207,7 @@ void UseOrder(FText t)
 	case 1:
 		if (MyPlayer.location.roomNum == 8 && bagptr->TryUseKey()) {
 			std::cout << "**** The key fits the hole! The main door is unlocked, you can now leave!" << std::endl;
+			world.UnlockMainDoor();
 			canEscape = true;
 		}
 		else if (bagptr->TryUseKey()) {

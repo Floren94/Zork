@@ -11,6 +11,7 @@ class World
 public:
 	World(); // constructor
 	void Start();
+	void UnlockMainDoor();
 	void DropItem(int room, int secc, int item) const;
 	void PickItem(int room, int secc, int item) const;
 	int32 CheckPickItem(int room, int secc, int item) const;

@@ -35,6 +35,9 @@ Room::Room(int n)
 	case  9:
 		CreateRoom_9();
 		break;
+	case  10:
+		CreateRoom_10();
+		break;
 	}
 }
 
@@ -348,9 +351,9 @@ void Room::CreateRoom_4()
 		}
 		else {
 			secc.description = "--You're still at the guest room and you see a big Armor. There is an empty spot... looks like another one is missing.";
-			secc.snack = 1;
+			secc.lance = 1; 
 			secc.look = 1;
-			secc.lookText = "++Looks like someone ate here. The leftovers are still fresh.";
+			secc.lookText = "++ You see some weapons on the wall that could be useful.";
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
 				case  0:
@@ -398,7 +401,10 @@ void Room::CreateRoom_5()
 			}
 			break;
 		case  2:
-			secc.description = "--You're at the center of the hall. You see the main door to the south.";
+			secc.description = "--You're at the center of the hall. You see the main door to the south and a big round table with cutlery.";
+			secc.snack = 1;
+			secc.look = 1;
+			secc.lookText = "++Looks like someone ate here. The leftovers are still fresh.";
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
 				case  0:
@@ -436,7 +442,7 @@ void Room::CreateRoom_5()
 			}
 			break;
 		case  4:
-			secc.description = "--You're at the entrance of the hall. The main door is in front of you, this looks like the way out.";
+			secc.description = "--You're at the entrance of the hall. The main door is in front of you, this looks like the way out... But it's closed.";
 			for (int i = 0; i <= 3; i++) {
 				switch (i) {
 				case  0:
@@ -574,7 +580,7 @@ void Room::CreateRoom_8()
 {
 	Section secc;
 	secc.secNum = 1;
-	secc.description = "--You're in a room full of weapons. There's a wierd hole on one of the walls and a door to the north."; 
+	secc.description = "--You're in a room full of tools. There's a wierd hole on one of the walls and a door to the north."; 
 	for (int i = 0; i <= 3; i++) {
 		switch (i) {
 		case  0:
@@ -592,7 +598,6 @@ void Room::CreateRoom_8()
 		}
 	}
 	secc.look = 1;
-	secc.lance = 1;
 	secc.lookText = "++ It looks like you could use a key on that hole...";
 	sections.push_back(secc);
 }
@@ -623,6 +628,34 @@ void Room::CreateRoom_9()
 	secc.look = 1;
 	secc.lookText = "++Looks like the poor guy got trapped on his way out.";
 	sections.push_back(secc);
+}
+
+void Room::CreateRoom_10()
+{
+	Section secc;
+	secc.secNum = 1;
+	secc.description = "--You're out of the mansion!. "; for (int i = 0; i <= 3; i++) {
+		switch (i) {
+		case  0:
+			secc.vectorDirections.push_back(std::make_pair(0, 0));
+			break;
+		case  1:
+			secc.vectorDirections.push_back(std::make_pair(0, 0));
+			break;
+		case  2:
+			secc.vectorDirections.push_back(std::make_pair(0, 0));
+			break;
+		case  3:
+			secc.vectorDirections.push_back(std::make_pair(0, 0));
+			break;
+		}
+	}
+}
+
+void Room::OpenMainDoor()
+{
+	sections[3].vectorDirections[2] = std::make_pair(10, 1);
+	sections[3].description = "--You're at the entrance of the hall. To the south you see the main door wide open... Let's get out of here!";
 }
 
 

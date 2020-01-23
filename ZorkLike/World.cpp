@@ -6,11 +6,16 @@ World::World() { Start(); }
 
 void World::Start() 
 {
-	for (int i = 1; i <=9; i++) {
+	for (int i = 1; i <=10; i++) {
 		Room *roomptr = new Room(i);
 		vectorRooms.push_back(roomptr);
 	}
 
+}
+
+void World::UnlockMainDoor()
+{
+	vectorRooms[4]->OpenMainDoor();
 }
 
 void World::DropItem(int room, int secc, int item) const
