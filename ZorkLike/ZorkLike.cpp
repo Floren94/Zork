@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 #include "Player.h"
+#include "Armor.h"
 #include "World.h"
 
 // to make syntax Unreal friendly
@@ -14,6 +16,8 @@ void DropOrder(FText t);
 void PickOrder(FText t);
 void UseOrder(FText t);
 void LookOrder();
+void CheckCombat();
+void Attack();
 void CheckPick(int item);
 void CheckOrder(int32 i, FText t);
 int32 CheckMainOrder(FText t);
@@ -26,12 +30,12 @@ int32 dir;
 int32 item;
 int32 floorItem;
 bool canEscape = false;
-bool onCombat = false;
 std::pair<int32, int32> nextRoom;
 std::pair<FString, int32> lookPair;
 
 Player MyPlayer;
 Bag *bagptr;
+Armor enemy;
 World world;
 
 char playerMove[256];
@@ -40,9 +44,14 @@ int main()
 {
 	bagptr = &MyPlayer.MyBag;
 	PrintIntro();
+
 	do{
-		//implement open main door and escape if canEscape
+		//If the armor is spawned, check if you're figthing it before the turn starts.
+		if (canEscape) {
+			CheckCombat();
+		}
 		NewTurn();
+		// Check if you won or lost before the next turn.
 		if (canEscape && MyPlayer.location.roomNum == 10) {
 			MyPlayer.endGame = 1;
 		}
@@ -51,7 +60,7 @@ int main()
 	switch (MyPlayer.endGame) {
 	case 1:
 		std::cout << std::endl << "+--------------------------------------------------------------------------------+";
-		std::cout << std::endl << "**************** Congratulations you did it! **********************" << std::endl << std::endl;
+		std::cout << std::endl << "**************** Congratulations you did it! Now you are free from the curse. **********************" << std::endl << std::endl;
 		break;
 	case 2:
 		std::cout << std::endl << "+--------------------------------------------------------------------------------+";
@@ -72,7 +81,12 @@ void PrintIntro()
 void NewTurn() 
 {
 	std::cout << std::endl << "+--------------------------------------------------------------------------------+" ;
-	std::cout << std::endl << world.GetRoomDescr(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
+	if (!MyPlayer.onCombat) {
+		std::cout << std::endl << world.GetRoomDescr(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
+	}
+	else {
+		std::cout << std::endl << "++++++++++  ALERT!  ++++++++" << std::endl << "The Guardian's blocking the west side of the hall and willing to kill you!" << std::endl;
+	}
 	std::cout << ">>> What do you do?" << std::endl;
 	std::cin.getline(playerMove, 100);
 	moveOrder = CheckMainOrder(playerMove);
@@ -133,7 +147,13 @@ void CheckOrder(int32 i, FText t)
 		break;
 
 	case 6:
-		std::cout << world.CheckSecc(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
+		MyPlayer.location.roomNum = 6;
+		MyPlayer.location.roomSecc = 1;
+		bagptr->ownedItems.lance = 1; 
+		world.UnlockMainDoor();
+		canEscape = true;
+		enemy.Appear();
+		//std::cout << world.CheckSecc(MyPlayer.location.roomNum, MyPlayer.location.roomSecc) << std::endl;
 		break;
 	}
 }
@@ -143,8 +163,13 @@ void GoOrder(FText t)
 	dir = Direction(t);
 	if (dir != 0 && world.CheckDirection(dir, MyPlayer.location.roomNum, MyPlayer.location.roomSecc)) {
 		nextRoom = world.nextRoom(dir, MyPlayer.location.roomNum, MyPlayer.location.roomSecc);
-		MyPlayer.location.roomNum = nextRoom.first;
-		MyPlayer.location.roomSecc = nextRoom.second;
+		//Can't go west if fighting armor.
+		if (MyPlayer.onCombat == true && dir == 4) {
+			std::cout << "X- The Guardian is blocking the way!" << std::endl;
+		}else{
+			MyPlayer.location.roomNum = nextRoom.first;
+			MyPlayer.location.roomSecc = nextRoom.second;
+		}
 	}
 	else {
 		std::cout << "X- You can't go there." << std::endl;
@@ -206,9 +231,11 @@ void UseOrder(FText t)
 		break;
 	case 1:
 		if (MyPlayer.location.roomNum == 8 && bagptr->TryUseKey()) {
-			std::cout << "**** The key fits the hole! The main door is unlocked, you can now leave!" << std::endl;
-			world.UnlockMainDoor();
+			std::cout << "**** The key fits the hole! The key breaks after using it but the main door is still unlocked, you can now leave!" << std::endl;
+			world.UnlockMainDoor(); 
+			bagptr->ownedItems.key = 0;
 			canEscape = true;
+			enemy.Appear();
 		}
 		else if (bagptr->TryUseKey()) {
 			std::cout << "*** You can't use it here." << std::endl;
@@ -218,8 +245,8 @@ void UseOrder(FText t)
 		}
 		break;
 	case 2:
-		if (onCombat == true && bagptr->TryUseLance()) {
-			std::cout << "*** Lance used" << std::endl;
+		if (MyPlayer.onCombat == true && bagptr->TryUseLance()) {
+			Attack();
 		}
 		else if (bagptr->TryUseLance()) {
 			std::cout << "*** No enemies nearby." << std::endl;
@@ -350,5 +377,33 @@ bool CheckItemToss(int32 item)
 		break;
 	}
 	return false;
+}
+
+void CheckCombat() {
+	if (enemy.location.roomNum == MyPlayer.location.roomNum &&
+		enemy.location.roomSecc == MyPlayer.location.roomSecc) {
+		MyPlayer.onCombat = true;
+		enemy.onCombat = true;
+	}
+	else if (MyPlayer.onCombat){
+		MyPlayer.onCombat = false;
+		enemy.onCombat = false;
+	}
+}
+
+void Attack()
+{
+	if (rand() % 100 > 60) {
+		enemy.LooseLife();
+		if (enemy.CheckLife() == 1) {
+			enemy.Dead();
+			std::cout << "COMBAT RESULT: HIT!" << std::endl << " --> You hit the Guardian right in it's core! He falls to his knees and the armor breaks while he banishes. He's gone." << std::endl;
+		}else{
+			std::cout << "COMBAT RESULT: HIT!" << std::endl << " --> The Guardian didn't predict the strike and gets a direct hit! Keep attacking!" << std::endl;
+		}
+	}
+	else {
+		std::cout << "COMBAT RESULT: MISS!" << std::endl << " --> The Guardian did predict the strike and blocked it. He's thought but don't give up." << std::endl;
+	}
 }
 

@@ -14,6 +14,7 @@ struct Section
 	int32 lance = 0;
 	int32 snack = 0;
 	int32 bigbag = 0;
+	bool armorHere = false;
 	FString description;
 	FString lookText;
 	std::vector<std::pair<int32, int32>> vectorDirections;

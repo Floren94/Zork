@@ -31,6 +31,9 @@
     <Filter Include="Archivos de encabezado\WorldHeaders">
       <UniqueIdentifier>{fb16eb57-10e7-4656-9188-c5294167b3fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\NPCHeaders">
+      <UniqueIdentifier>{41c1cabe-623e-40e0-b4cc-5e33436a9f5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -44,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Archivos de encabezado\WorldHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Armor.h">
+      <Filter>Archivos de encabezado\NPCHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>Archivos de origen\WorldLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Armor.cpp">
+      <Filter>Archivos de origen\NPCLayer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
