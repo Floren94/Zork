@@ -347,8 +347,11 @@ void CheckPick(int item)
 			break;
 		case 4:
 			// if you find the bag you can place items inside it and carry all of them
+			if (bagptr->maxItems != 3) {
+				std::cout << "**** You can now place items inside the bag and carry more of them!" << std::endl;
+			}
 			bagptr->maxItems = 3;
-			std::cout << "**** You can now place items inside the bag and carry more of them!" << std::endl;
+			world.PickItem(MyPlayer.location.roomNum, MyPlayer.location.roomSecc, item);
 			break;
 		}
 	}

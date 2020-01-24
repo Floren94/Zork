@@ -64,16 +64,16 @@ int32 Room::CheckItemPick(int secc, int item)
 {
 	switch (item) {
 	case 1:
-		if (sections[secc - 1].key = 1) { return 1; }
+		if (sections[secc - 1].key == 1) { return 1; }
 		break;
 	case 2:
-		if (sections[secc - 1].lance = 1) { return 2; }
+		if (sections[secc - 1].lance == 1) { return 2; }
 		break;
 	case 3:
-		if (sections[secc - 1].snack = 1) { return 3; }
+		if (sections[secc - 1].snack == 1) { return 3; }
 		break;
 	case 4:
-		if (sections[secc - 1].bigbag = 1) { return 4; }
+		if (sections[secc - 1].bigbag == 1) { return 4; }
 	}
 	return 0;
 }
@@ -138,6 +138,9 @@ void Room::GiveItem(int item, int secc)
 		break;
 	case 3:
 		sections[secc - 1].snack = 0;
+		break;
+	case 4:
+		sections[secc - 1].bigbag = 0;
 		break;
 	}
 }
